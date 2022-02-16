@@ -1,50 +1,76 @@
 import React from "react";
 
-function Gride() {
+function Gride(props) {
     const [elemnts, setelement] = React.useState([]);
+    const [score, setScore] = React.useState(0);
 
     function getRandomInt(max) {
         return Math.floor(Math.random() * max);
     }
 
-    function setUpGridElements() {
+    function fill() {
+        for (let i = 0; i < 10; i++) {
+            let newElemnt = {
+                id: i,
+                content: getRandomInt(10),
+                willRoll: true,
+            };
+            setelement((elements) => [...elements, newElemnt]);
+        }
+
+        console.log("starting");
+    }
+
+    function reFill() {
         setelement((elements) => {
-            elements.map((element) => {
-                return <div className="element">{element}</div>;
-            });
+            for (let i = 0; i < 10; i++) {
+                if (elements[i].willRoll) {
+                    elements[i].content = getRandomInt(10);
+                }
+            }
+            return elements;
+        });
+
+        console.log("refilling");
+    }
+
+    function changeState(i) {
+        setelement((element) => {
+            element[i].willRoll = !element[i].willRoll;
+
+            return [...element];
         });
     }
 
     React.useEffect(() => {
-        setelement((element) => {
-            for (let i = 0; i < 10; i++) {
-                element.push(getRandomInt(9));
-            }
-        });
-        //setUpGridElements();
+        fill();
     }, []);
 
-    //  const grid = .map((x) => x * 2);
+    React.useEffect(() => {
+        reFill();
+    }, [props.change]);
 
-    /* const gridElements = elemnts.map((elemnt) => {
-        return <div className="element">{elemnt}</div>;
+    React.useEffect(() => {
+        setScore((s) => s++);
+        console.log("update");
+    }, [elemnts]);
+    console.log(elemnts);
+    const gridElements = elemnts.map((element) => {
+        return (
+            <div
+                key={element.id}
+                className={element.willRoll ? "element" : "element green"}
+                onClick={() => changeState(element.id)}
+            >
+                {" "}
+                {element.content}
+            </div>
+        );
     });
 
-    console.log(gridElements);*/
+    console.log(elemnts);
 
-    return <div className="grid"></div>;
+    return <div className="grid">{gridElements}</div>;
 }
 
 export default Gride;
-/**
- * <div className="element">1</div>
-            <div className="element">2</div>
-            <div className="element">3</div>
-            <div className="element">4</div>
-            <div className="element">5</div>
-            <div className="element">1</div>
-            <div className="element">2</div>
-            <div className="element">3</div>
-            <div className="element">4</div>
-            <div className="element">5</div>
- */
