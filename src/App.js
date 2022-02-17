@@ -1,6 +1,7 @@
 import React from "react";
 import "./App.css";
 import Gride from "./Gride";
+import Confetti from "react-confetti"
 function App() {
     const [change, setChange] = React.useState(false);
 
